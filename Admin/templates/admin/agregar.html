@@ -1,0 +1,85 @@
+{% extends 'Admin/base.html' %}
+{% block content %}
+<script>
+    function calculadora(){
+        var precio_compra = parseInt(document.getElementById("precio_compra").value);
+        var precio_venta = parseInt(document.getElementById("precio_venta").value);
+        var iva = precio_venta * 0.19;
+        var utilidades = precio_venta - precio_compra - iva;
+        document.getElementById("utilidades").value = utilidades;
+        document.getElementById("iva").value = iva;
+    };
+    function subir(){
+        var codigo = document.getElementById("codigo").value;
+        var id = document.getElementById("id_local").value;
+        var descripcion = document.getElementById("descripcion").value;
+        var precio_compra = parseInt(document.getElementById("precio_compra").value);
+        var precio_venta = parseInt(document.getElementById("precio_venta").value);
+        var iva = parseInt(document.getElementById("iva").value);
+        var utilidades = parseInt(document.getElementById("utilidades").value);
+        var vendido = "No";
+        var datos = '{"_id":"'+id+'", "codigo":"'+codigo+'", "descripcion":"'+descripcion+'", "precio_compra":'+precio_compra+
+        ', "precio_venta":'+precio_venta+', "iva":'+iva+', "utilidades":'+utilidades+', "vendido":"'+vendido+'" }';
+
+        $.ajax({
+            dataType : "json",
+            url : "http://192.168.0.4:5984/productos",
+            method : "post",
+            contentType : "application/json",
+            data : datos
+        });
+    };
+</script>
+
+<br>
+<h4>Nuevo producto</h4><br>
+<table class="table">
+    <tr>
+        <th>Código</th>
+        <td>
+            <input type="text" id="codigo">
+        </td>
+    </tr>
+    <tr>
+        <th>ID Local</th>
+        <td>
+            <input type="text" id="id_local" required>
+        </td>
+    </tr>
+    <tr>
+        <th>Descripción</th>
+        <td>
+            <input type="text" id="descripcion" required>
+        </td>
+    </tr>
+    <tr>
+        <th>Precio de compra</th>
+        <td>
+            <input type="number" id="precio_compra" onchange="calculadora();">
+        </td>
+    </tr>
+    <tr>
+        <th>Precio de venta</th>
+        <td>
+            <input type="number" id="precio_venta" onchange="calculadora();" required>
+        </td>
+    </tr>
+    <tr>
+        <th>Utilidades</th>
+        <td>
+            <input type="text" id="utilidades" readonly>
+        </td>
+    </tr>
+    <tr>
+        <th>IVA</th>
+        <td>
+            <input type="text" id="iva" readonly>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <button type="button" onclick="subir();">Registrar</button>
+        </th>
+    </tr>
+</table>
+{% endblock %}

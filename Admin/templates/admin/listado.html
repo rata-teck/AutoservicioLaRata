@@ -1,0 +1,54 @@
+{% extends 'Admin/base.html' %}
+{% block content %}
+<script>
+    $(document).ready(function listaProductos(){
+        var muchoTexto = "";
+        var rows = [];
+        var nrows = 0;
+        var id = "";
+
+        $.ajax({
+            dataType : "json",
+            url : "http://192.168.0.4:5984/productos/_all_docs",
+            method : "GET",
+            success : function(data){
+                $.each(data, function(i, productos){
+                    rows = data.rows;
+                    id = rows[nrows].id;
+                    $.ajax({
+                        dataType : "json",
+                        url : "http://192.168.0.4:5984/productos/"+id,
+                        method : "GET",
+                        success : function(data2){
+                            muchoTexto = "<tr>"+
+                            "<td>"+data2.codigo+"</td>"+
+                            "<td>"+data2._id+"</td>"+
+                            "<td>"+data2.descripcion+"</td>"+
+                            "<td>"+data2.precio_compra+"</td>"+
+                            "<td>"+data2.precio_venta+"</td>"+
+                            "<td>"+data2.utilidades+"</td>"+
+                            "<td>"+data2.iva+"</td>"+
+                            "<td>"+data2.vendido+"</td>"+
+                            "</tr>";
+                            $("#tabla").append(muchoTexto);
+                        }
+                    })
+                    nrows = nrows + 1;
+                })
+            }
+        });
+    });
+</script><br>
+<table class="table" id="tabla">
+    <tr>
+        <th>Codigo</th>
+        <th>ID Local</th>
+        <th>Descripción</th>
+        <th>Precio de compra</th>
+        <th>Precio de venta</th>
+        <th>Utilidades</th>
+        <th>IVA</th>
+        <th>Vendido</th>
+    </tr>
+</table>
+{% endblock %}
